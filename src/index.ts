@@ -1,13 +1,16 @@
-import git from './utils/git';
-import { Repository } from 'nodegit';
+import * as shell from 'shelljs';// https://github.com/shelljs/shelljs
+import { detect } from './utils/git';
+// import { upload } from './utils/oss';
 
-git.detect();
+function publish() {
+  const branch = detect();
+  if (!branch) return;
 
-// https://www.nodegit.org/api/#Repository
-Repository.open(process.cwd())
-.then(function(repository: Repository) {
-  return repository.getCurrentBranch();
-})
-.then(function(branch: any) {
-  console.log(branch.name())
-});
+  // const { env, version } = branch;
+
+  shell.exec('cnpm run build');// cnpm
+
+  // upload('', '');
+}
+
+publish();
