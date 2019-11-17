@@ -73,3 +73,9 @@ export const checkout = (branchName: string, newBranchFlag?: boolean) => {
 export const createTempBranch = (branchName: string, newBranchFlag?: boolean) => {
   return shell.exec(`git checkout ${newBranchFlag ? '-b ' : ''}${branchName}`);
 };
+
+export const diffToOriginMaster = (branchName: string) => {
+  return shell.exec(`git diff ${branchName} origin/master`, {
+    silent: true
+  });
+};
