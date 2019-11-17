@@ -9,6 +9,9 @@
     "email": "sc941203@gmail.com"
   },
   "repository": "/skywalker",
+  "bin": {
+    "skywalker": "bin/index.js"
+  },
   "scripts": {
     "build": "rimraf lib && tsc --outDir lib"
   },
@@ -16,7 +19,8 @@
     "ali-oss": "^6.2.1",
     "chalk": "^3.0.0",
     "nodegit": "^0.26.2",
-    "shelljs": "^0.8.3"
+    "shelljs": "^0.8.3",
+    "yargs": "^15.0.1"
   },
   "devDependencies": {
     "@types/ali-oss": "^6.0.4",

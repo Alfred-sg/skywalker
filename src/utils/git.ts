@@ -50,7 +50,6 @@ const getBranches = () => {
  */
 const getCurrentBranch = () => {
   const branches = getBranches();
-  console.log(branches);
   return branches.find(branch => !!branch.current);
 };
 
@@ -59,7 +58,6 @@ const getCurrentBranch = () => {
  */
 export const detect = () => {
   const branch = getCurrentBranch();
-  console.log(branch);
   if (!branch || !branch.available){
     console.log(chalk.red('there is no available branch existed, please check.'))
     return;
