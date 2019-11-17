@@ -1,11 +1,11 @@
-# @umi-material/skywalker
+# skywalker
 
-
+配合 jenkins、oss 实现自动化部署。
 
 ## Usage
 
 ```sh
-umi block https://github.com//tree/master/skywalker
+skywalker run
 ```
 
 ## LICENSE

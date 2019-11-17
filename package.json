@@ -2,8 +2,7 @@
   "name": "skywalker",
   "version": "0.1.0",
   "description": "",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
+  "main": "lib/index.js",
   "authors": {
     "name": "alfred",
     "email": "sc941203@gmail.com"
