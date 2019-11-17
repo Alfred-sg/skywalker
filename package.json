@@ -1,0 +1,29 @@
+{
+  "name": "skywalker",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "authors": {
+    "name": "alfred",
+    "email": "sc941203@gmail.com"
+  },
+  "repository": "/skywalker",
+  "scripts": {
+    "build": "rimraf lib && tsc --outDir lib"
+  },
+  "dependencies": {
+    "ali-oss": "^6.2.1",
+    "chalk": "^3.0.0",
+    "nodegit": "^0.26.2",
+    "shelljs": "^0.8.3"
+  },
+  "devDependencies": {
+    "@types/ali-oss": "^6.0.4",
+    "@types/nodegit": "^0.24.13",
+    "@types/shelljs": "^0.8.6",
+    "rimraf": "^3.0.0",
+    "typescript": "^3.3.3"
+  },
+  "license": "MIT"
+}
