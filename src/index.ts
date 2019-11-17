@@ -3,14 +3,11 @@ import { Repository } from 'nodegit';
 
 git.detect();
 
-console.log(process.cwd())
+// https://www.nodegit.org/api/#Repository
 Repository.open(process.cwd())
-// Open the master branch.
 .then(function(repository: Repository) {
-  console.log(repository.getCurrentBranch())
   return repository.getCurrentBranch();
 })
-// Display information about commits on master.
-.then(function(firstCommitOnMaster: any) {
-  console.log(firstCommitOnMaster)
+.then(function(branch: any) {
+  console.log(branch.name())
 });
