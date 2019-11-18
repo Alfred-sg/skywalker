@@ -103,7 +103,7 @@ const getConfig = () => {
 /**
  * 执行
  */
-const run = () => {
+const deploy = () => {
   const config = getConfig();
   if (config === false) return;
 
@@ -161,4 +161,4 @@ const run = () => {
   }, null);
 };
 
-export default run;
+export default deploy;
