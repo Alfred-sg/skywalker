@@ -6,7 +6,7 @@ const SCRIPT = join(__dirname, '../bin/index.js');
 function run(opts = {}) {
   const { cwd } = opts;
   return new Promise(resolve => {
-    const child = fork(SCRIPT, ['--region', 'hangzhou'], {
+    const child = fork(SCRIPT, {
       cwd: cwd,
       env: {
         ...process.env

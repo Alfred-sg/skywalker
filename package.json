@@ -25,7 +25,9 @@
     "@types/ali-oss": "^6.0.4",
     "@types/nodegit": "^0.24.13",
     "@types/shelljs": "^0.8.6",
+    "@types/yargs": "^13.0.3",
     "rimraf": "^3.0.0",
+    "tslib": "^1.10.0",
     "typescript": "^3.3.3"
   },
   "license": "MIT"
