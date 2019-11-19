@@ -1,16 +1,7 @@
 import * as shell from 'shelljs';// https://github.com/shelljs/shelljs
 import * as chalk from 'chalk';
+import { Branch } from '../types';
 // import { Repository } from 'nodegit';// https://www.nodegit.org/api/#Repository
-
-interface Branch {
-  current?: boolean,
-  name: string,
-  hash: string,
-  message: string,
-  available: boolean,
-  env?: string,
-  version?: string,
-};
 
 const BranchReg = /(daily|publish)\/([0-9\.]*)/;
 

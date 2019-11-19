@@ -6,3 +6,40 @@ export interface OssOptions {
   secure?: boolean,// (secure: true)则使用HTTPS，(secure: false)则使用HTTP
   timeout?: string | number,// 超时时间，默认60
 };
+
+export interface OssConfig extends OssOptions {
+  objectRoot?: string,
+};
+
+export interface Branch {
+  current?: boolean,
+  name: string,
+  hash: string,
+  message: string,
+  available: boolean,
+  env?: string,
+  version?: string,
+};
+
+export interface Argv {
+  [key: string]: any;
+  _: string[];
+  $0: string;
+}
+
+export interface UserConfig {
+  pre?: (ctx: Context) => {}[],// lint、单测 TODO
+  post?: (ctx: Context) => {}[],
+  oss?: OssConfig,
+  envMap?: { [key: string]: string },
+  dist?: string,
+  npmClient?: 'npm' | 'cnpm' | 'tnpm' | 'yarn',
+};
+
+export interface Context {
+  config_file: string;
+  cwd: string;
+  argv: Argv;
+  config: { [key: string]: any };
+  branch: Branch;
+}

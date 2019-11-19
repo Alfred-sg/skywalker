@@ -1,23 +1,20 @@
 import * as shell from 'shelljs';// https://github.com/shelljs/shelljs
 import * as chalk from 'chalk';
+import Context from '../core/ctx';
 
-interface Options {
-  npmClient?: 'npm' | 'cnpm' | 'tnpm' | 'yarn',
-};
+export default {
+  task: (ctx: Context) => {
+    /**
+     * 构建
+     * @param {Options} options 选项 
+     */
+    // @ts-ignore
+    const { npmClient = 'npm' } = ctx.config;
 
-/**
- * 构建
- * @param {Options} options 选项 
- */
-const build = ({
-  npmClient = 'npm',
-}: Options = {
-}) => {
-  console.log(chalk.blue('start to build.'))
-
-  shell.exec(`${npmClient} run build`);
+    console.log(chalk.blue('start to build.'))
   
-  console.log(chalk.blue('end to build.'))
+    shell.exec(`${npmClient} run build`);
+    
+    console.log(chalk.blue('end to build.'))
+  }
 };
-
-export default build;
