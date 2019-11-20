@@ -5,11 +5,9 @@ import * as tasks from './tasks';
  * 执行
  */
 const deploy = () => {
-  new Context().registerTasks([
-    tasks.gitcheck.pre,
-    tasks.build.task,
-    tasks.oss.task,
-  ]).run();
+  new Context().post(
+    tasks.ossTask.task,
+  ).excute();
 };
 
 export default deploy;

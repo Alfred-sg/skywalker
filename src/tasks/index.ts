@@ -1,3 +1,2 @@
-export { default as build } from './build';
-export { default as gitcheck } from './gitcheck';
-export { default as oss } from './oss';
+export { default as buildTask } from './build';
+export { default as ossTask } from './oss';

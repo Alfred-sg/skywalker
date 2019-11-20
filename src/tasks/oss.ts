@@ -17,6 +17,7 @@ const resolve = (ctx: Context) => {
     accessKeySecret,
     bucket,
     objectRoot,
+    dist: argvDist,
   } = ctx.argv;
 
   // 通过 cli 配置
@@ -55,7 +56,7 @@ const resolve = (ctx: Context) => {
     oss,
     objectRoot: objectRoot || objectRootConfig,
     envMap,
-    dist,
+    dist: argvDist || dist,
   };
 };
 

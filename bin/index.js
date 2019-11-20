@@ -6,7 +6,10 @@ require('yargs')
   .version(require('../package.json').version)
   .alias('version', 'v')
   .command('deploy', 'deploy static resource', (yargs) => {
-    yargs.option('region', {
+    yargs.option('dist', {
+      type: 'string',
+      description: 'dist'
+    }).option('region', {
       type: 'string',
       description: 'oss region, see https://help.aliyun.com/document_detail/32068.html'
     })

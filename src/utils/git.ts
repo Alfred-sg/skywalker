@@ -1,5 +1,4 @@
 import * as shell from 'shelljs';// https://github.com/shelljs/shelljs
-import * as chalk from 'chalk';
 import { Branch } from '../types';
 // import { Repository } from 'nodegit';// https://www.nodegit.org/api/#Repository
 
@@ -50,7 +49,6 @@ const getCurrentBranch = () => {
 export const detect = () => {
   const branch = getCurrentBranch();
   if (!branch || !branch.available){
-    console.log(chalk.red('there is no available branch existed, please check.'))
     return;
   };
 
