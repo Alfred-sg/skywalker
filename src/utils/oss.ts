@@ -1,4 +1,6 @@
+import * as fs from 'fs';
 import { extname } from 'path';
+import * as zlib from 'zlib';
 import * as OSS from 'ali-oss';
 import * as chalk from 'chalk';
 import { OssOptions } from '../types';
@@ -35,8 +37,9 @@ const check = () => {
  * @param {string} path 文件路径
  */
 const getMetaData = (path: string) => {
-  const extName = extname(path);
+  const extName = extname(path).slice(1);
   let contentType: string;
+  let contentEncoding: string | undefined;
   switch(extName) {
     case 'html':
       contentType = 'text/html';
@@ -48,15 +51,20 @@ const getMetaData = (path: string) => {
       break;
     case 'js':
       contentType = 'application/javascript';
+      contentEncoding = 'gzip';
+      break;
+    case 'css':
+      contentType = 'text/css';
       break;
     default:
       contentType = `application/${extName}`;
+      contentEncoding = undefined;
   }
 
   return {
     headers: {
       'Content-Type': contentType,
-      'Content-Encoding': 'gzip',
+      'Content-Encoding': contentEncoding,
     }
   };
 };
@@ -124,9 +132,24 @@ export const list = async (dir: string) => {
 export const upload = async (object: string, localfile: string) => {
   check();
 
-  const result = await client.put(object, localfile, getMetaData(localfile)).catch(err => {
-    console.log(chalk.red(`upload ${localfile} to oss failed, please check.`), err);
-  });
+  const metaData = getMetaData(localfile);
+  const { headers } = metaData;
+  const contentEncoding = headers['Content-Encoding'];
+  let result;
+  if ( contentEncoding === 'gzip' ) {
+    // gzip 压缩
+    const gzip = zlib.createGzip();
+    const inp = fs.createReadStream(localfile);
+    const stream = inp.pipe(gzip);
+    // @ts-ignore
+    result = await client.putStream(object, stream, metaData).catch(err => {
+      console.log(chalk.red(`upload ${localfile} to oss failed, please check.`), err);
+    });
+  } else {
+    result = await client.put(object, localfile, metaData).catch(err => {
+      console.log(chalk.red(`upload ${localfile} to oss failed, please check.`), err);
+    });
+  };
 
   // @ts-ignore // 忽略错误
   const { res: { status }, name, url } = result;
@@ -134,7 +157,7 @@ export const upload = async (object: string, localfile: string) => {
   if ( status == 200 ) {
     const nameChunks = name.split('/');
     const fileName = nameChunks[nameChunks.length - 1];
-    console.log(`${chalk.green(fileName)} upload successed, oss url is ${chalk.blue(url)}`);
+    console.log(`${chalk.green(fileName)} upload successed, oss url is ${chalk.green(url)}`);
   }
 
   return result;

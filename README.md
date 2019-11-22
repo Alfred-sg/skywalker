@@ -5,7 +5,7 @@
 ## Usage
 
 ```sh
-skywalker run
+skywalker deploy --region=your-region --accessKeyId=your-access-key-id --accessKeySecret=your-access-key-secret --bucket=your-bucket --objectRoot=your-object-root
 ```
 
 ## LICENSE

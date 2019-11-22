@@ -1,12 +1,14 @@
 #!/usr/bin/env node
-
 require('yargs')
   .usage("Usage: skywalker <cmd> [options]")
   .locale("zh_CN")
   .version(require('../package.json').version)
   .alias('version', 'v')
   .command('deploy', 'deploy static resource', (yargs) => {
-    yargs.option('dist', {
+    yargs.option('branchName', {
+      type: 'string',
+      description: 'git branchName to operate'
+    }).option('dist', {
       type: 'string',
       description: 'dist'
     }).option('region', {

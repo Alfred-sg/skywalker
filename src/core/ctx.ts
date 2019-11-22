@@ -2,9 +2,16 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as yargs from 'yargs';
 import * as chalk from 'chalk';
-import { detect, diffToOriginMaster } from '../utils/git';
+import { parse, detect, diffToOriginMaster } from '../utils/git';
 import { buildTask } from '../tasks';
-import { Argv, Branch } from '../types';
+import { Argv } from '../types';
+
+interface Branch {
+  current?: boolean,
+  name: string,
+  env?: string,
+  version?: string,
+}
 
 class Context {
   private config_file: string = './.skywalker.js';
@@ -27,16 +34,17 @@ class Context {
    * 检出有效分支，并与 master 分支比较，是否有冲突，TODO
    */
   detect = () => {
-    const branch = detect();
-    
+    const { branchName: branchName } = this.argv;
+    const branch = branchName ? parse(branchName) : detect();
+
     if ( branch ) {
       this.branch = branch;
     } else {
       throw new Error('there is no available branch existed, please check.');
     };
-    
+
     const { name, env } = branch;
-    
+
     if ( env === 'publish' ) {
       const diff = diffToOriginMaster(name);
       if ( diff ) {
@@ -58,8 +66,8 @@ class Context {
   excute = async () => {
     const all_tasks = [
       this.detect,
-      ...this.preTasks, 
-      buildTask.task, 
+      ...this.preTasks,
+      buildTask.task,
       ...this.postTasks
     ];
 

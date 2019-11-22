@@ -64,9 +64,9 @@ export default {
   // task 和参数解析一并考虑 TODO
   /**
    * oss 上传
-   * @param {Options} options 选项 
+   * @param {Options} options 选项
    */
-  task: (ctx: Context) => {
+  task: async (ctx: Context) => {
     const { branch } = ctx;
     // @ts-ignore
     const { env, version } = branch;
@@ -75,22 +75,27 @@ export default {
     console.log(chalk.blue('start to update.'))
 
     OssUtil.config(oss);
-  
+
     const objectPrefix = `${objectRoot}${envMap && env && envMap[env] ? '/' + envMap[env] + '/' : '/'}${version}`;
     const dir = path.resolve(process.cwd(), dist);
-  
+
     // 打包文件不存在，报错
     if ( !existsSync(dir) ) {
       throw new Error(`${dir} is not existed, please check.`);
     };
-  
-    fsmap(dir, (paths) => {
-      const object = `${objectPrefix}/${paths.simplePath}`;
-      OssUtil.upload(object, paths.path);
+
+    const all_upload_tasks: any[] = [];
+    fsmap(dir, (paths, isDirectory) => {
+
+      if ( isDirectory ) return;
+      all_upload_tasks.push(async () => {
+        const object = `${objectPrefix}/${paths.simplePath}`;
+        await OssUtil.upload(object, paths.path);
+      });
     });
-  
-    // 处理异步 TODO
-    // console.log(chalk.blue('end to update.'));
-    return true;
+
+    Promise.all(all_upload_tasks.map(task => task())).then(() => {
+      console.log(chalk.blue('end to update.'));
+    });
   }
 };

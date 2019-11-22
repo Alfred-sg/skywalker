@@ -19,6 +19,7 @@ export interface Branch {
   available: boolean,
   env?: string,
   version?: string,
+  isRemote?: boolean,
 };
 
 export interface Argv {
