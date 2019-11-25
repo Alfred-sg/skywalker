@@ -11,7 +11,7 @@ interface Branch {
   name: string,
   env?: string,
   version?: string,
-}
+};
 
 class Context {
   private config_file: string = './.skywalker.js';

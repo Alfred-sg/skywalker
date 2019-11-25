@@ -9,7 +9,7 @@ import { OssOptions } from '../types';
 
 const resolve = (ctx: Context) => {
   // @ts-ignore
-  const { oss: ossConfig, envMap, dist = 'dist', } = ctx.config;
+  const { oss: ossConfig, dist = 'dist', } = ctx.config;
   let { objectRoot: objectRootConfig } = ossConfig || {};
   const {
     region,
@@ -17,6 +17,7 @@ const resolve = (ctx: Context) => {
     accessKeySecret,
     bucket,
     objectRoot,
+    deployVersion,
     dist: argvDist,
   } = ctx.argv;
 
@@ -55,7 +56,7 @@ const resolve = (ctx: Context) => {
   return {
     oss,
     objectRoot: objectRoot || objectRootConfig,
-    envMap,
+    deployVersion,
     dist: argvDist || dist,
   };
 };
@@ -70,13 +71,13 @@ export default {
     const { branch } = ctx;
     // @ts-ignore
     const { env, version } = branch;
-    const { oss, objectRoot, envMap, dist } = resolve(ctx);
+    const { oss, objectRoot, deployVersion, dist } = resolve(ctx);
 
     console.log(chalk.blue('start to update.'))
 
     OssUtil.config(oss);
 
-    const objectPrefix = `${objectRoot}${envMap && env && envMap[env] ? '/' + envMap[env] + '/' : '/'}${version}`;
+    const objectPrefix = `${objectRoot}/${deployVersion ? deployVersion : version}`;
     const dir = path.resolve(process.cwd(), dist);
 
     // 打包文件不存在，报错

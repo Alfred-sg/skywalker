@@ -5,9 +5,12 @@ require('yargs')
   .version(require('../package.json').version)
   .alias('version', 'v')
   .command('deploy', 'deploy static resource', (yargs) => {
-    yargs.option('branchName', {
+    yargs.option('deployVersion', {
       type: 'string',
-      description: 'git branchName to operate'
+      description: 'version to deploy'// 发布的版本
+    }).option('branchName', {
+      type: 'string',
+      description: 'git branchName to operate'// 操作的分支
     }).option('dist', {
       type: 'string',
       description: 'dist'
