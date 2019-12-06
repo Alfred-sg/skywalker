@@ -12,11 +12,14 @@
     "skywalker": "bin/index.js"
   },
   "scripts": {
-    "build": "rimraf lib && tsc --outDir lib"
+    "build": "rimraf lib && tsc --outDir lib",
+    "test": "set DEBUG=* & node scripts/test.js"
   },
   "dependencies": {
     "ali-oss": "^6.2.1",
     "chalk": "^3.0.0",
+    "debug": "^4.1.1",
+    "execa": "^3.4.0",
     "nodegit": "^0.26.2",
     "shelljs": "^0.8.3",
     "yargs": "^15.0.1"

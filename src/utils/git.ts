@@ -1,7 +1,11 @@
+import debugBuilder from 'debug';// https://github.com/visionmedia/debug
 import * as shell from 'shelljs';// https://github.com/shelljs/shelljs
+import * as execa from 'execa';
 import * as chalk from 'chalk';
 import { Branch } from '../types';
 // import { Repository } from 'nodegit';// https://www.nodegit.org/api/#Repository
+
+const debug = debugBuilder('git');
 
 const BranchReg = /((?:origin\/)?(daily|publish))\/([0-9\.]*)/;
 
@@ -92,4 +96,66 @@ export const diffToOriginMaster = (branchName: string) => {
   return shell.exec(`git diff ${branchName} origin/master`, {
     silent: true
   });
+};
+
+/**
+ * 合并 master 分支
+ */
+export const mergeMaster = () => {
+  return shell.exec(`git merge origin/master`, {
+    silent: true
+  });
+};
+
+// Git 奇技淫巧：https://github.com/521xueweihan/git-tips
+
+/**
+ * @todo 查看冲突文件列表
+ */
+export const detectConflict = () => {
+  // 查看冲突文件列表
+  const cmd = `git diff --name-only --diff-filter=U`;
+
+  const { stdout, stderr } = execa.commandSync(cmd);
+
+  if (stderr){
+    console.log(`detect conflict failed: ${chalk.red(stderr)}`);
+  };
+
+  return stdout;
+}
+
+/**
+ * 删除已经合并到 master 的分支
+ */
+export const deleteUseless = () => {
+  return shell.exec(`git branch --merged master | grep -v '^\*\|  master' | xargs -n 1 git branch -d`, {
+    silent: true
+  });
+}
+
+/**
+ * 获取最后提交的 git 本地分支
+ */
+export const detectLocalLatestBranch = () => {
+  // 以最后提交的顺序列出所有 git 分支
+  const cmd = `git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads/`;
+
+  debug('begin to detect latest changed branch.');
+
+  const { stdout, stderr } = execa.commandSync(cmd);
+
+  if (stderr){
+    console.log(`get latest changed branch failed: ${chalk.red(stderr)}`);
+  };
+
+  const branches = stdout.split(/\r|\n/).map(branch => branch.replace(/(^\')|(\'$)/g, ''));
+
+  debug(`latest changed branch is: ${branches}`);
+
+  const latestBranch = branches[0];
+
+  console.log(`latest changed branch is: ${chalk.green(latestBranch)}`);
+
+  return latestBranch;
 };
