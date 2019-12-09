@@ -1,0 +1,14 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "authors": {
+    "name": "alfred",
+    "email": "sc941203@gmail.com"
+  },
+  "scripts": {
+    "build": "echo hello"
+  },
+  "license": "MIT"
+}

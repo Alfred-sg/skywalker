@@ -12,8 +12,10 @@ export default {
 
     try {
       git.mergeMaster();
+      const conflict = git.detectConflict();
+      if (conflict) throw new Error(conflict);
     } catch(err) {
-      throw new Error(`merge failed, ${err.message}`);
+      throw new Error(`merge failed or conflict with master branch, ${err.message}`);
     };
 
     console.log(chalk.blue('end to merge master.'))

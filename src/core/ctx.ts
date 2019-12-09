@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as yargs from 'yargs';
 import * as chalk from 'chalk';
+import * as crypto from 'crypto';
+import axios from "axios";
 import { parse, detect, diffToOriginMaster } from '../utils/git';
 import { buildTask } from '../tasks';
 import { Argv } from '../types';
@@ -14,6 +16,7 @@ interface Branch {
 };
 
 class Context {
+  private pkg?: { [key: string]: any };
   private config_file: string = './.skywalker.js';
   cwd: string = process.cwd();
   argv: Argv = yargs.argv;
@@ -24,6 +27,7 @@ class Context {
   postTasks: Function[] = [];
 
   constructor(){
+    this.pkg = require(path.resolve(process.cwd(), './package.json'));
     const config_file_path = path.resolve(this.cwd, this.config_file);
     if ( fs.existsSync(config_file_path) ){
       this.config = require(config_file_path);
@@ -75,9 +79,47 @@ class Context {
       for (const task of all_tasks) {
         await task(this)
       };
+
+      this.sendToDingtalk(true);
     } catch(err) {
       console.log(chalk.red(`task excute failed.\n${err.message}`));
+      this.sendToDingtalk(false);
     };
+  }
+
+  sendToDingtalk = (success: boolean) => {
+    const { dingtalkAccessToken, dingtalkSecret } = this.argv;
+    if (!this.pkg || !this.branch || !dingtalkAccessToken || !dingtalkSecret) return;
+    const { name: branchName } = this.branch;
+
+    const baseUrl = 'https://oapi.dingtalk.com/robot/send';
+    const access_token = dingtalkAccessToken;
+    const secret = dingtalkSecret;
+    const timestamp = Date.now();
+    const sign = crypto.createHmac('sha256', secret)
+      .update(timestamp + '\n' + secret)
+      .digest().toString('base64');
+    const url = `${baseUrl}?access_token=${access_token}&timestamp=${timestamp}&sign=${sign}`;
+
+    axios.request({
+      url: url,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: JSON.stringify({
+        msgtype: "markdown",
+        markdown: {
+          "title": `deploy log`,
+          "text": `
+#### ${this.pkg.name}:${branchName} deploy ${success ? 'successed' : 'failed'}.
+          `
+        },
+        at: {}
+      })
+    }).then(res => {
+      console.log(res.data);
+    });
   }
 }
 

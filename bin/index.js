@@ -33,6 +33,12 @@ require('yargs')
     .option('objectRoot', {
       type: 'string',
       description: 'root path of oss object, see https://help.aliyun.com/document_detail/32068.html'
+    }).option('dingtalkAccessToken', {
+      type: 'string',
+      description: 'dingtalk access token'
+    }).option('dingtalkSecret', {
+      type: 'string',
+      description: 'dingtalk secret'
     });
   }, (argv) => {
     require('../lib/index').default();

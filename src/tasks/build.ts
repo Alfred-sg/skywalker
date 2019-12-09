@@ -26,6 +26,7 @@ export default {
 
     const cmd = process.platform === 'win32' ? npmClient + '.cmd' : npmClient;
     try {
+      shell.exec(`${cmd} install`);
       shell.exec(`${cmd} run build`);
     } catch(err) {
       throw new Error(`build failed, ${err.message}`);

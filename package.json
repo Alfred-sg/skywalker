@@ -17,8 +17,10 @@
   },
   "dependencies": {
     "ali-oss": "^6.2.1",
+    "axios": "^0.19.0",
     "chalk": "^3.0.0",
     "debug": "^4.1.1",
+    "dingtalk-robot-sender": "^1.2.0",
     "execa": "^3.4.0",
     "nodegit": "^0.26.2",
     "shelljs": "^0.8.3",
@@ -26,7 +28,9 @@
   },
   "devDependencies": {
     "@types/ali-oss": "^6.0.4",
+    "@types/dingtalk-robot-sender": "^1.1.0",
     "@types/nodegit": "^0.24.13",
+    "@types/request": "^2.48.3",
     "@types/shelljs": "^0.8.6",
     "@types/yargs": "^13.0.3",
     "rimraf": "^3.0.0",
