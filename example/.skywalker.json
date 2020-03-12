@@ -1,8 +1,0 @@
-{
-  "region": "oss-cn-hangzhou", 
-  "accessKeyId": "LTAIAfhPewLlRsrR",
-  "accessKeySecret": "n2hZ4nlSN2Dygj9Q3yrKutDmH2PL1o", 
-  "bucket": "zwfw-mc",
-  "objectRoot": "dfh/test",
-  "branchName": "daily/0.0.1"
-}

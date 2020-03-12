@@ -43,6 +43,10 @@ require('yargs')
   }, (argv) => {
     require('../lib/index').default();
   })
+  .command('config', 'set or get config', (yargs) => {}, (argv) => {
+    if (argv[1]) require('../lib/config').setConfig(argv[0], argv[1]);
+    else require('../lib/config').getConfig(argv[0]);
+  })
   .showHelpOnFail(false, 'Specify --help for available options')
   .help('help')
   .help()

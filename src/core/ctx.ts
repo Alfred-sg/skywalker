@@ -17,7 +17,7 @@ interface Branch {
 
 class Context {
   private pkg?: { [key: string]: any };
-  private config_file: string = './.skywalker.js';
+  private config_file: string = '../../.skywalker.json';
   cwd: string = process.cwd();
   argv: Argv = yargs.argv;
   config?: { [key: string]: any } = {};
@@ -28,7 +28,7 @@ class Context {
 
   constructor(){
     this.pkg = require(path.resolve(process.cwd(), './package.json'));
-    const config_file_path = path.resolve(this.cwd, this.config_file);
+    const config_file_path = path.resolve(__dirname, this.config_file);
     if ( fs.existsSync(config_file_path) ){
       this.config = require(config_file_path);
     };
