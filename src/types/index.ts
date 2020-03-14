@@ -14,6 +14,7 @@ export interface OssConfig extends OssOptions {
 
 export interface Branch {
   current?: boolean,
+  origin?: string;
   name: string,
   hash: string,
   message: string,

@@ -16,10 +16,10 @@ interface Branch {
 };
 
 class Context {
-  private pkg?: { [key: string]: any };
+  pkg?: { [key: string]: any };
   cwd: string = process.cwd();
   argv: Argv = yargs.argv;
-  config: GlobalConfig = getConfig();
+  config: GlobalConfig = getConfig(true);
   branch?: Branch;
 
   preTasks: Task[] = [];
@@ -28,7 +28,6 @@ class Context {
 
   constructor(){
     this.pkg = require(path.resolve(process.cwd(), './package.json'));
-    this.config = getConfig();
     this.detectDeployBranch();
   }
 
@@ -128,24 +127,18 @@ class Context {
 
   sendToDingtalk = (err?: any) => {
     const { deployEnv = 'prod' } = this.argv;
-    const project_config_file_path = path.resolve(process.cwd(), './.skywalker.json')
+    const project_config_file_path = path.resolve(process.cwd(), './.skywalker.js')
     if ( !fs.existsSync(project_config_file_path) ) return;
 
     const projectConfig = require(project_config_file_path);
+    console.log(projectConfig)
     const { 
       accessToken = '', 
       secret = '', 
-      success = {}, 
-      error = {},
-      subscribe = undefined,// 订阅内容 ['prod', 'dev', 'success', 'error']
+      getTextContent = undefined,
     } = projectConfig.dingtalk || {};
 
-    if (!accessToken || !secret) return;
-    if (subscribe){
-      if ( !subscribe.includes(deployEnv) && !subscribe.includes(!err ? 'success' : 'error') ){
-        return;
-      }
-    }
+    if (!accessToken || !secret || !getTextContent) return;
 
     const robot = new ChatBot({
       baseUrl: 'https://oapi.dingtalk.com/robot/send',
@@ -154,19 +147,25 @@ class Context {
       secret,
     });
 
-    const projectName = this.pkg && this.pkg.name || '';
-    const envName = ` ${deployEnv} 环境`;
-    const text = !err ? `${projectName} 项目${envName}发布成功，请点击访问` : `${projectName} 项目${envName}发布失败，请重试！\n错误内容：${err.message}`;
-    const messageUrl = !err ? success && success[deployEnv] : error && error[deployEnv];
-    robot.link({
-      title: "发布日志", 
-      text,
-      picUrl: "", 
-      messageUrl
-    })
-    // .catch((err: any) => {
-    //   console.log(chalk.red(`send dingtalk message successed.\nERROR MESSAGE: ${err.message}`));
-    // });
+    const textContent = getTextContent({
+      env: deployEnv,
+      branch: this.branch,
+    }, err);
+
+    if (textContent){
+      robot[textContent.msgtype ? 'send' : 'link'](textContent)
+        .then((res: { data: any }) => {
+          const { data } = res;
+          if (data && !!data.errcode){
+            console.log(chalk.red(`send dingtalk message failed.\nERROR MESSAGE: ${data.errmsg}`));
+          } else {
+            console.log(chalk.blue(`send dingtalk message successed.`));
+          }
+        })
+        .catch((err: any) => {
+          console.log(chalk.red(`send dingtalk message failed.\nERROR MESSAGE: ${err.message}`));
+        });
+    };
   }
 }
 

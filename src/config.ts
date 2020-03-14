@@ -27,11 +27,11 @@ export const setConfig = (name: string, value: string | number) => {
   fs.writeFileSync(config_file_path, JSON.stringify(finalConfig, null, 2));
 }
 
-export const getConfig = (name?: string) => {
+export const getConfig = (name?: string | boolean) => {
   if ( fs.existsSync(config_file_path) ){
     const config = require(config_file_path) || {};
-    if (!name){
-      console.log(JSON.stringify(config, null, 2));
+    if (!name || typeof name !== 'string'){
+      if (!name) console.log(JSON.stringify(config, null, 2));
       return config;
     }
 
