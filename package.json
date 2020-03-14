@@ -1,6 +1,6 @@
 {
   "name": "tac-skywalker",
-  "version": "0.1.12",
+  "version": "0.2.0",
   "description": "",
   "main": "lib/index.js",
   "authors": {
@@ -16,9 +16,9 @@
     "test": "set DEBUG=* & node scripts/test.js"
   },
   "dependencies": {
-    "ali-oss": "^6.2.1",
-    "axios": "^0.19.0",
+    "ali-oss": "^6.5.0",
     "chalk": "^3.0.0",
+    "cross-env": "^7.0.2",
     "debug": "^4.1.1",
     "dingtalk-robot-sender": "^1.2.0",
     "execa": "^3.4.0",

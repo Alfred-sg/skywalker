@@ -1,0 +1,12 @@
+{
+  "oss": {
+    "endpoint": "your end point",
+    "bucket": "your bucket",
+    "accessKeyId": "your access key id",
+    "accessKeySecret": "your access key secret"
+  },
+  "dingtalk": {
+    "accessToken": "your accessToken",
+    "secret": "your secret"
+  }
+}

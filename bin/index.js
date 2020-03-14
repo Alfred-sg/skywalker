@@ -5,47 +5,35 @@ require('yargs')
   .version(require('../package.json').version)
   .alias('version', 'v')
   .command('deploy', 'deploy static resource', (yargs) => {
-    yargs.option('deployVersion', {
+    yargs
+    .option('deployEnv', {
       type: 'string',
-      description: 'version to deploy'// 发布的版本
-    }).option('branchName', {
-      type: 'string',
-      description: 'git branchName to operate'// 操作的分支
-    }).option('dist', {
-      type: 'string',
-      description: 'dist'
-    }).option('region', {
-      type: 'string',
-      description: 'oss region, see https://help.aliyun.com/document_detail/32068.html'
+      description: 'deploy env',// 发布环境
+      default: 'prod',
     })
-    .option('accessKeyId', {
+    .option('npmClient', {
       type: 'string',
-      description: 'oss accessKeyId, see https://help.aliyun.com/document_detail/32068.html'
+      description: 'npm client'// 发布的版本
     })
-    .option('accessKeySecret', {
+    .option('dist', {
       type: 'string',
-      description: 'oss accessKeySecret, see https://help.aliyun.com/document_detail/32068.html'
+      description: 'dist',
+      default: 'dist',
     })
-    .option('bucket', {
+    .option('deployDirectory', {
       type: 'string',
-      description: 'oss bucket, see https://help.aliyun.com/document_detail/32068.html'
+      description: 'deploy directory'// 发布目录
     })
-    .option('objectRoot', {
+    .option('deployVersion', {
       type: 'string',
-      description: 'root path of oss object, see https://help.aliyun.com/document_detail/32068.html'
-    }).option('dingtalkAccessToken', {
-      type: 'string',
-      description: 'dingtalk access token'
-    }).option('dingtalkSecret', {
-      type: 'string',
-      description: 'dingtalk secret'
+      description: 'version to deploy'// 发布版本，影响发布目录
     });
-  }, (argv) => {
+  }, () => {
     require('../lib/index').default();
   })
   .command('config', 'set or get config', (yargs) => {}, (argv) => {
-    if (argv[1]) require('../lib/config').setConfig(argv[0], argv[1]);
-    else require('../lib/config').getConfig(argv[0]);
+    if (argv._[2]) require('../lib/config').setConfig(argv._[1], argv._[2]);
+    else require('../lib/config').getConfig(argv._[1]);
   })
   .showHelpOnFail(false, 'Specify --help for available options')
   .help('help')

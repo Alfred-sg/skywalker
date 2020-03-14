@@ -77,9 +77,9 @@ const getCurrentBranch = () => {
  */
 export const detect = () => {
   const branch = getCurrentBranch();
-  if (!branch || !branch.available){
-    return;
-  };
+  // if (!branch || !branch.available){
+  //   return;
+  // };
 
   return branch;
 };

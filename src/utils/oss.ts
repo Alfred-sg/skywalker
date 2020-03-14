@@ -20,6 +20,8 @@ export const config = (options: OssOptions) => {
   } catch(err) {
     console.log(chalk.red(`instantiate oss client failed, please check.`), err);
   };
+
+  return client;
 };
 
 /**
@@ -129,7 +131,7 @@ export const list = async (dir: string) => {
  * @param {string} object oss 文件地址
  * @param {string} localfile 本地文件地址
  */
-export const upload = async (object: string, localfile: string) => {
+export const upload = async (object: string, localfile: string): Promise<any> => {
   check();
 
   const metaData = getMetaData(localfile);
@@ -151,8 +153,16 @@ export const upload = async (object: string, localfile: string) => {
     });
   };
 
+  // TODO 错误重试
   // @ts-ignore // 忽略错误
-  const { res: { status }, name, url } = result;
+  const { res, name, url } = result;
+
+  if ( !res ) {
+    console.log(`${chalk.red(localfile)} upload failed, retry`);
+    return await upload(object, localfile);
+  }
+
+  const { status } = res;
 
   if ( status == 200 ) {
     const nameChunks = name.split('/');
