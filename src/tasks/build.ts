@@ -22,13 +22,13 @@ export default {
   run: (ctx: Context) => {
     // @ts-ignore
     const { npmClient = 'npm' } = ctx.config;
-    const { npmClient: npmClientArgv, env = 'prod' } = ctx.argv;
+    const { npmClient: npmClientArgv, deployEnv = 'prod' } = ctx.argv;
     const realNpmClient = npmClientArgv || npmClient;
     const cmd = process.platform === 'win32' ? realNpmClient + '.cmd' : realNpmClient;
     
     shell.exec(`${cmd} install`);
 
-    console.log(`cross-env DEPLOY_ENV=${env} ${cmd} run build`);
-    shell.exec(`cross-env DEPLOY_ENV=${env} ${cmd} run build`);
+    console.log(`cross-env DEPLOY_ENV=${deployEnv} ${cmd} run build`);
+    shell.exec(`cross-env DEPLOY_ENV=${deployEnv} ${cmd} run build`);
   }
 };
