@@ -38,24 +38,17 @@ const getBranches = () => {
   });
 
   const branches = stdout.split('\n').filter(item => !!item).map((item: string) => {
-    let origin = '';
-    let rest = item;
+    let temp = (item.match(/(\(.*\))|(\[.*\])|([^\s\[\]\(\)]*)/g) || [])
+      .filter(item => !!item);
+    const current = temp[0] === '*';
+    temp = temp.filter((item, index: number) => !(item == '*' && !index));
 
-    const originBegin = item.indexOf('[origin');
-    if (originBegin !== -1){
-      const originEnd = originBegin + item.slice(originBegin).indexOf(']') + 1;
-      origin = item.slice(originBegin, originEnd);
-      rest = item.slice(0, originBegin) + item.slice(originEnd);
-    }
-
-    const temp = rest.split(/\s+/g).map((property: string) => property.trim());
-    
     const branch: Branch = {
-      current: temp.shift() === '*',
-      origin,
-      name: temp.shift() || '',
-      hash: temp.shift() || '',
-      message: temp.shift() || '',
+      current,
+      name: temp[0],
+      hash: temp[1],
+      origin: temp[2].indexOf('[origin') !== -1 ? temp[2] : undefined,
+      message: temp[2].indexOf('[origin') !== -1 ? temp[3] : temp[2],
       available: false,
     };
 
