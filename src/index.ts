@@ -5,7 +5,7 @@ import * as tasks from './tasks';
  * 执行
  */
 const deploy = () => {
-  new Context()//.pre(tasks.mergeMasterTask)
+  new Context()
     .post(tasks.ossTask)
     .post(tasks.tagTask)
     .excute();

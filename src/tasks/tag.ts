@@ -18,7 +18,18 @@ export default {
     const { name = 'master' } = ctx.branch || {};
     const { deployEnv = 'prod' } = ctx.argv;
 
-    if (name !== 'master' || deployEnv !== 'prod') return;
+    if (deployEnv !== 'prod') return;
+
+    // jenkins 环境下非 master 分支，先合并 master 分支
+    if (name !== 'master'){
+      try {
+        git.mergeMaster();
+        const conflict = git.detectConflict();
+        if (conflict) throw new Error(conflict);
+      } catch(err) {
+        throw new Error(`merge failed or conflict with master branch, ${err.message}`);
+      };
+    }
 
     const pkgPath = path.resolve(ctx.cwd, './package.json');
     const pkg = require(pkgPath);
