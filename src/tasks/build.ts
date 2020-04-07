@@ -26,9 +26,13 @@ export default {
     const realNpmClient = npmClientArgv || npmClient;
     const cmd = process.platform === 'win32' ? realNpmClient + '.cmd' : realNpmClient;
     
-    shell.exec(`${cmd} install`);
-
-    console.log(`cross-env DEPLOY_ENV=${deployEnv} ${cmd} run build`);
-    shell.exec(`cross-env DEPLOY_ENV=${deployEnv} ${cmd} run build`);
+    try {
+      shell.exec(`${cmd} install`);
+  
+      console.log(`cross-env DEPLOY_ENV=${deployEnv} ${cmd} run build`);
+      shell.exec(`cross-env DEPLOY_ENV=${deployEnv} ${cmd} run build`);
+    } catch(err){
+      throw err;
+    }
   }
 };
