@@ -6,7 +6,9 @@ import * as tasks from './tasks';
  */
 const deploy = () => {
   new Context()//.pre(tasks.mergeMasterTask)
-    .post(tasks.ossTask).excute();
+    .post(tasks.ossTask)
+    .post(tasks.tagTask)
+    .excute();
 };
 
 export default deploy;

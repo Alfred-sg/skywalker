@@ -164,3 +164,12 @@ export const detectLocalLatestBranch = () => {
 
   return latestBranch;
 };
+
+/**
+ * 打 tag
+ * @param version 版本号
+ */
+export const tag = (version: string) => {
+  shell.exec(`git tag publish/${version}`);
+  shell.exec(`git push origin publish/${version}:publish/${version}`);
+}

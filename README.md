@@ -4,10 +4,12 @@
 
 ## Feature
 
+* 基于 deployEnv 区分不同环境。
 * 支持本地执行部署流程。
 * 支持 jenkins 执行部署流程。
 * 支持发布到 oss 环境。
-* 支持发送钉钉消息
+* 生产环境基于 package.json 中 version 信息打 tag。
+* 支持发送钉钉消息。
 * [TODO] 支持发布到 cdn 环境。
 * [TODO] 支持通过 ssh 发布。
 

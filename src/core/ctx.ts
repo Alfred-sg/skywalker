@@ -131,7 +131,7 @@ class Context {
     if ( !fs.existsSync(project_config_file_path) ) return;
 
     const projectConfig = require(project_config_file_path);
-    console.log(projectConfig)
+    
     const { 
       accessToken = '', 
       secret = '', 
