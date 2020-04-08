@@ -18,6 +18,7 @@ export default {
   run: (ctx: Context) => {
     const { name = 'master' } = ctx.branch || {};
     const { deployEnv = 'prod' } = ctx.argv;
+    console.log(deployEnv);
 
     if (deployEnv !== 'prod') return;
 

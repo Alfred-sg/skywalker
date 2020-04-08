@@ -98,7 +98,13 @@ class Context {
     ) => {
       return async () => {
         let prevRes;
-        if (prevTasks) prevRes = await prevTasks(this);
+        if (prevTasks){
+          try {
+            prevRes = await prevTasks(this);
+          } catch(err) {
+            throw err;
+          };
+        }
 
         console.log(`${chalk.blue(`${current.name} task is started`)}`);
         
