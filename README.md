@@ -10,7 +10,6 @@
 * 支持发布到 oss 环境。
 * 生产环境基于 package.json 中 version 信息打 tag。
 * 支持发送钉钉消息。
-* [TODO] 支持发布到 cdn 环境。
 * [TODO] 支持通过 ssh 发布。
 
 ## Usage
