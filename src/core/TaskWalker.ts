@@ -1,11 +1,19 @@
+import * as topDebug from 'debug';
 import Context from './Context';
+import { Task } from './types';
 
-type Task = ((ctx: typeof Context) => void) | ((ctx: typeof Context) => Promise<any>);
+const debug = topDebug('skywalker');
 
 class TaskWalker {
   tasks: Task[];
 
+  constructor(...tasks: Task[]){
+    this.tasks = tasks;
+  }
+
   register(...tasks: Task[]){
+    debug('register tasks');
+
     (tasks || []).map(task => {
       this.tasks.push(task);
     });
@@ -13,14 +21,16 @@ class TaskWalker {
   }
 
   run(ctx: typeof Context){
-    return this.tasks.forEach(task => {
-      return task(ctx)
+    return this.tasks.forEach((task, index: number) => {
+      debug(`sync execute task: stage ${index}`);
+      return task(ctx);
     });
   }
 
   runAsync(ctx: typeof Context, onSuccess: Function){
-    const exector = this.tasks.reduceRight((next, current) => {
+    const exector = this.tasks.reduceRight((next, current, index) => {
       return async (ctx) => {
+        debug(`async execute task: stage ${index}`);
         await current(ctx);
         return next(ctx);
       };

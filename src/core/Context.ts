@@ -4,24 +4,11 @@ import * as chalk from 'chalk';
 import * as topDebug from 'debug';
 import * as yargs from 'yargs';
 import { detect } from '../utils/git';
+import * as strategies from './strategies';
 import { Argv, GlobalConfig } from '../types';
+import { Branch, Env, ContextOptions } from './types';
 
 const debug = topDebug('skywalker');
-
-interface Branch {
-  current?: boolean,
-  name: string,
-  env?: string,
-  version?: string,
-};
-
-export type Env = 'dev' | 'test' | 'pre' | 'prod';
-
-export interface ContextOptions {
-  env?: Env;
-  cwd?: string;
-  configFileName?: string;
-}
 
 class Context {
   /**
@@ -69,6 +56,11 @@ class Context {
    */
   appConfig: GlobalConfig;
 
+  /**
+   * stages 策略
+   */
+  strategy: string = 'ssh';
+
   constructor(options?: ContextOptions){
     this.resolveOptions(options);
     this.wirePaths();
@@ -86,6 +78,7 @@ class Context {
     this.options = options;
     if (options && options.env) this.env = options.env;
     if (options && options.cwd) this.cwd = options.cwd;
+    if (options && options.strategy) this.strategy = options.strategy;
   }
 
   /**
@@ -143,6 +136,24 @@ class Context {
     debug(`start to get branch info`);
     this.gitBranch = detect();
     debug(`branch info is ${chalk.blue(JSON.stringify(this.gitBranch))}`);
+  }
+
+  get stages(){
+    const wireOptions = (stage: { [key: string]: any }) => {
+      return {
+        name: stage.name,
+        options: {
+          ...(this.skywalkerConfig && this.skywalkerConfig[stage.name]),
+          ...stage.options 
+        }
+      };
+    };
+
+    if (this.appConfig && this.appPackage?.stages){
+      return this.appPackage.stages.map(wireOptions);
+    }
+
+    return strategies[this.strategy].map(wireOptions);
   }
 }
 
