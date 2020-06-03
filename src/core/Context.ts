@@ -6,7 +6,7 @@ import * as yargs from 'yargs';
 import { detect } from '../utils/git';
 import * as strategies from './strategies';
 import { Argv, GlobalConfig } from '../types';
-import { Branch, Env, ContextOptions } from './types';
+import { Branch, Env, NpmClient, ContextOptions } from './types';
 
 const debug = topDebug('skywalker');
 
@@ -21,6 +21,8 @@ class Context {
    */
   env: Env = 'prod';
 
+  npmClient: NpmClient = 'cnpm';
+
   /**
    * 工程目录路径
    */
@@ -34,7 +36,7 @@ class Context {
   /**
    * 路径
    */
-  paths: { [key: string]: string };
+  paths: { [key: string]: any };
 
   /**
    * 工程目录中 package.json
@@ -61,6 +63,11 @@ class Context {
    */
   strategy: string = 'ssh';
 
+  /**
+   * apis 接口
+   */
+  apis: { [key: string]: any };
+
   constructor(options?: ContextOptions){
     this.resolveOptions(options);
     this.wirePaths();
@@ -76,9 +83,17 @@ class Context {
     this.cwd = process.cwd();
     this.argv = yargs.argv;
     this.options = options;
+
     if (options && options.env) this.env = options.env;
+    if (this.argv && this.argv.env) this.env = this.argv.deployEnv;
+
+    if (options && options.npmClient) this.npmClient = options.npmClient;
+    if (this.argv && this.argv.npmClient) this.npmClient = this.argv.npmClient;
+
     if (options && options.cwd) this.cwd = options.cwd;
+
     if (options && options.strategy) this.strategy = options.strategy;
+    if (this.argv && this.argv.strategy) this.strategy = this.argv.strategy;
   }
 
   /**

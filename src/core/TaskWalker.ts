@@ -5,13 +5,13 @@ import { Task } from './types';
 const debug = topDebug('skywalker');
 
 class TaskWalker {
-  tasks: Task[];
+  tasks: { task: Task, options: any }[];
 
-  constructor(...tasks: Task[]){
+  constructor(...tasks: { task: Task, options: any }[]){
     this.tasks = tasks;
   }
 
-  register(...tasks: Task[]){
+  register(...tasks: { task: Task, options: any }[]){
     debug('register tasks');
 
     (tasks || []).map(task => {
@@ -20,18 +20,18 @@ class TaskWalker {
     return this;
   }
 
-  run(ctx: typeof Context){
-    return this.tasks.forEach((task, index: number) => {
+  run(ctx: Context){
+    return this.tasks.forEach(({ task, options }, index: number) => {
       debug(`sync execute task: stage ${index}`);
-      return task(ctx);
+      return task(ctx, options);
     });
   }
 
-  runAsync(ctx: typeof Context, onSuccess: Function){
-    const exector = this.tasks.reduceRight((next, current, index) => {
+  runAsync(ctx: Context, onSuccess: Function){
+    const exector = this.tasks.reduceRight((next, { task, options }, index) => {
       return async (ctx) => {
         debug(`async execute task: stage ${index}`);
-        await current(ctx);
+        await task(ctx, options);
         return next(ctx);
       };
     }, () => {

@@ -1,9 +1,11 @@
 import Context from './Context';
 import TaskWalker from './TaskWalker';
-import { Task } from '../types';
+import buildPlugin from './buildinPlugins/build';
+import ossPlugin from './buildinPlugins/oss';
+import { Task } from './types';
 
 class SkyWalker {
-  context: any;
+  context: Context;
   plugins: { [name: string]: Task };
 
   constructor(){
@@ -11,20 +13,20 @@ class SkyWalker {
     this.context.apis = {
       registerPlugin: this.registerPlugin,
     };
+
+    this.registerPlugin('build', buildPlugin);
+    this.registerPlugin('oss', ossPlugin);
   }
 
   registerPlugin(name: string, plugin: Task){
-    this.plugins[name] = plugin;
+    if (plugin && typeof name == 'string'){
+      this.plugins[name] = plugin;
+    } else if (typeof name != 'string'){
+      this.plugins[plugin.name] = plugin;
+    };
   }
 
-  doCheck(){
-    return new TaskWalker(this.context.stages.map(stage => {
-      const plugin = this.plugins[stage.name];
-      return plugin.check;
-    })).run(this.context);
-  }
-
-  doTasks(){
+  run(){
     return new TaskWalker(this.context.stages.map(stage => {
       const plugin = this.plugins[stage.name];
       return plugin.run;

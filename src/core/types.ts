@@ -9,11 +9,15 @@ export interface Branch {
 
 export type Env = 'dev' | 'test' | 'pre' | 'prod';
 
+export type NpmClient = 'npm' | 'cnpm' | 'tnpm' | 'yarn';
+
 export interface ContextOptions {
   env?: Env;
   cwd?: string;
   configFileName?: string;
   strategy?: string;
+  npmClient?: NpmClient;
 };
 
-export type Task = ((ctx: typeof Context) => void) | ((ctx: typeof Context) => Promise<any>);
+export type Task = ((ctx: Context, options?: any) => any) | 
+  ((ctx: Context, options?: any) => Promise<any>);
