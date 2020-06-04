@@ -5,13 +5,13 @@ import { Task } from './types';
 const debug = topDebug('skywalker');
 
 class TaskWalker {
-  tasks: { task: Task, options: any }[];
+  tasks: Task[];
 
-  constructor(...tasks: { task: Task, options: any }[]){
+  constructor(...tasks: Task[]){
     this.tasks = tasks;
   }
 
-  register(...tasks: { task: Task, options: any }[]){
+  register(...tasks: Task[]){
     debug('register tasks');
 
     (tasks || []).map(task => {
@@ -21,24 +21,24 @@ class TaskWalker {
   }
 
   run(ctx: Context){
-    return this.tasks.forEach(({ task, options }, index: number) => {
+    return this.tasks.forEach((task, index: number) => {
       debug(`sync execute task: stage ${index}`);
-      return task(ctx, options);
+      return task(ctx);
     });
   }
 
-  runAsync(ctx: Context, onSuccess: Function){
-    const exector = this.tasks.reduceRight((next, { task, options }, index) => {
+  runAsync(ctx: Context, onSuccess: Task, onFail: Function){
+    const exector = this.tasks.reduceRight<Task>((next, current, index) => {
       return async (ctx) => {
         debug(`async execute task: stage ${index}`);
-        await task(ctx, options);
-        return next(ctx);
+        await current(ctx);
+        return next ? next(ctx) : next;
       };
-    }, () => {
-      onSuccess && onSuccess();
-    });
+    }, onSuccess);
 
-    exector(ctx);
+    exector(ctx).catch((err: Error) => {
+      onFail(err);
+    });
   }
 }
 

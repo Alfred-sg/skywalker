@@ -1,11 +1,11 @@
 import * as shell from 'shelljs';// https://github.com/shelljs/shelljs
-import Context from '../Context';
+import Context from '../core/Context';
 
 /**
  * 构建
  */
 export default async (ctx: Context) => {
-  const { scripts } = ctx.paths.appPackage;
+  const { scripts } = ctx.appPackage;
   if ( !scripts.build ) {
     throw new Error('there is no build script in package.json, please set.');
   };
